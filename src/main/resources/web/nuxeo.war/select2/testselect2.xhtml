@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<nxthemes:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:nxthemes="http://nuxeo.org/nxthemes"
+  xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+  xmlns:nxd="http://nuxeo.org/nxweb/document"
+  xmlns:nxl="http://nuxeo.org/nxforms/layout"
+  xmlns:nxu="http://nuxeo.org/nxweb/util">
+
+  <ui:define name="page title">
+    Testing Select 2
+  </ui:define>
+
+  <ui:define name="body">
+
+  <h:form>
+
+   <ui:include src="/select2/select2_widget_template.xhtml">
+    <ui:param name="selectid" value="one" />
+    <ui:param name="width" value="300" />
+    <ui:param name="minimumInputLength" value="3" />
+    <ui:param name="query" value="select * from Document where ecm:fulltext LIKE ?" />
+   </ui:include>
+
+   <ui:include src="/select2/select2_widget_template.xhtml">
+    <ui:param name="selectid" value="two" />
+    <ui:param name="width" value="200" />
+    <ui:param name="minimumInputLength" value="2" />
+    <ui:param name="query" value="select * from Document where ecm:fulltext LIKE ?" />
+   </ui:include>
+
+  </h:form>
+
+  <script src="/nuxeo/scripts/select2/select2.js"/>
+
+  <script>
+    <!--
+    jQuery(document).ready(function() {
+
+     jQuery('head').append('<link rel="stylesheet" href="/nuxeo/css/select2.css" type="text/css" />');
+
+     jQuery("input[type='hidden'][id$=select2]").each(function(idx,el) {
+       var elid = el.id;
+       el=jQuery(el);
+       var paramid = elid + "-params";
+       paramid=paramid.replace(":","\\:");
+       var params = JSON.parse(jQuery("#" + paramid).val());
+       //console.log(params);
+       el.css("width",params.width + "px");
+       el.select2({
+        minimumInputLength: params.minimumInputLength,
+        query: function (query) {
+          var op = jQuery().automation('Document.PageProvider');
+          op.addParameter("query",params.query);
+          op.addParameter("queryParams", query.term + "%");
+          op.addParameter("page","0");
+          op.addParameter("pageSize","20");
+          op.execute(function(data, textStatus,xhr) {
+            var results = [];
+            for ( i = 0; i < data.entries.length; i++) {
+              var doc = data.entries[i];
+              results.push({id: doc.uid, text: doc.title});
+            }
+            query.callback({results : results});
+          });
+          }
+       });
+     });
+   });
+   -->
+  </script>
+
+
+  </ui:define>
+</nxthemes:composition>

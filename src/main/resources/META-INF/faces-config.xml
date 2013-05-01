@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faces-config>
+  <navigation-rule>
+    <navigation-case>
+      <from-outcome>select2</from-outcome>
+      <to-view-id>/select2/testselect2.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+</faces-config>
+

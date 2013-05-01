@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-Vendor: Nuxeo
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Bundle-Version: 5.7-I20130430_0116
+Bundle-Name: nuxeo-select2-integration
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: nuxeo-select2-integration
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
