@@ -29,10 +29,10 @@
     <ui:param name="minimumInputLength" value="3" />
     <ui:param name="query" value="select * from Document where ecm:fulltext LIKE ?" />
     <ui:param name="documentSchemas" value="dublincore" />
-    <ui:param name="labelProperty" value="dc:title" />
    </ui:include>
 </td>
 </tr>
+
 <tr>
 <td> Custom formatting </td>
 <td>
@@ -42,7 +42,21 @@
     <ui:param name="minimumInputLength" value="2" />
     <ui:param name="query" value="select * from Document where ecm:fulltext LIKE ?" />
     <ui:param name="documentSchemas" value="dublincore,common" />
-    <ui:param name="labelProperty" value="dc:creator" />
+    <ui:param name="customFormater" value="myformater" />
+   </ui:include>
+</td>
+</tr>
+
+<tr>
+<td> Custom formatting with custom id</td>
+<td>
+   <ui:include src="/select2/select2_widget_template.xhtml">
+    <ui:param name="selectid" value="three" />
+    <ui:param name="width" value="400" />
+    <ui:param name="minimumInputLength" value="2" />
+    <ui:param name="query" value="select * from Document where ecm:fulltext LIKE ?" />
+    <ui:param name="documentSchemas" value="dublincore,common" />
+    <ui:param name="idProperty" value="dc:creator" />
     <ui:param name="customFormater" value="myformater" />
    </ui:include>
 </td>
@@ -103,16 +117,7 @@
             var results = [];
             for ( i = 0; i < data.entries.length; i++) {
               var doc = data.entries[i];
-              if (customFormaterFunction!=null) {
-                results.push(doc);
-              } else {
-                var resultEntryId= doc.uid;
-                var resultEntryLabel = doc.title;
-                if (params.labelProperty && params.labelProperty.length>0) {
-                  resultEntryLabel = doc.properties[params.labelProperty];
-                }
-                results.push({id: resultEntryId, text: resultEntryLabel});
-              }
+              results.push(doc);
             }
             query.callback({results : results});
           });
@@ -121,6 +126,17 @@
        // append custom result formater if needed
        if (customFormaterFunction!=null) {
          select2_params.formatResult = customFormaterFunction;
+         select2_params.formatSelection = function(doc) {return doc.title};
+       } else {
+         select2_params.formatResult = function(doc) {return doc.title};
+         select2_params.formatSelection = function(doc) {return doc.title};
+       }
+
+       // append id formater if needed
+       if (params.idProperty && params.idProperty.length>0) {
+          select2_params.id = function(doc) { return doc.properties[params.idProperty]; };
+       } else {
+          select2_params.id = function(doc) { return doc.uid; }
        }
 
        // init select2
