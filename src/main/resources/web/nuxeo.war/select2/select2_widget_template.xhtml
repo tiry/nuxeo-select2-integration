@@ -17,11 +17,17 @@ Needed parameters:
 - width
 - minimumInputLength
 - query
+- documentSchemas
+- labelProperty
+- customFormater
 </c:if>
 
   <h:inputHidden id="#{selectid}-select2"/>
   <h:inputHidden id="#{selectid}-select2-params" value="{&#34;width&#34;:#{width},
                                                          &#34;minimumInputLength&#34;:#{minimumInputLength},
-                                                         &#34;query&#34;:&#34;#{query}&#34;}"/>
+                                                         &#34;query&#34;:&#34;#{query}&#34;,
+                                                         &#34;documentSchemas&#34;:&#34;#{documentSchemas}&#34;,
+                                                         &#34;customFormater&#34;:&#34;#{customFormater}&#34;,
+                                                         &#34;labelProperty&#34;:&#34;#{labelProperty}&#34;}"/>
 
 </span>
