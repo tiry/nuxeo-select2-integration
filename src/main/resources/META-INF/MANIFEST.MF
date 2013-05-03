@@ -7,3 +7,4 @@ Bundle-Name: nuxeo-select2-integration
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: nuxeo-select2-integration
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Nuxeo-Component: OSGI-INF/layouts-contrib.xml

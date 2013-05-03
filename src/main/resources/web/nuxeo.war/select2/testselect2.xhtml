@@ -17,13 +17,14 @@
 
   <ui:define name="body">
 
+<h2> Test via template </h2>
   <h:form>
 
 <table>
 <tr>
 <td> Simple </td>
 <td>
-   <ui:include src="/select2/select2_widget_template.xhtml">
+   <ui:include src="/select2/select2_template.xhtml">
     <ui:param name="selectid" value="one" />
     <ui:param name="width" value="200" />
     <ui:param name="minimumInputLength" value="3" />
@@ -36,7 +37,7 @@
 <tr>
 <td> Custom formatting </td>
 <td>
-   <ui:include src="/select2/select2_widget_template.xhtml">
+   <ui:include src="/select2/select2_template.xhtml">
     <ui:param name="selectid" value="two" />
     <ui:param name="width" value="400" />
     <ui:param name="minimumInputLength" value="2" />
@@ -63,7 +64,22 @@
 </tr>
 
 </table>
-  </h:form>
+
+<h2>Test with Layouts</h2>
+
+</h:form>
+
+#{currentDocument.title}
+
+<h:form>
+ <nxl:layout name="testSelect2" mode="edit" value="#{currentDocument}"/>
+
+ <h:commandButton
+          value="save"
+          styleClass="button"
+          action="#{documentActions.updateCurrentDocument()}">
+        </h:commandButton>
+</h:form>
 
   <script src="/nuxeo/scripts/select2/select2.js"/>
 
@@ -88,10 +104,17 @@
 
        // retrieve parameters from Html
        var elid = el.id;
+       var params = {};
+
        el=jQuery(el);
-       var paramid = elid + "-params";
-       paramid=paramid.replace(":","\\:");
-       var params = JSON.parse(jQuery("#" + paramid).val());
+
+       var paramId = elid.split(":").reverse()[0] + "-params";
+       var paramsHolder = jQuery("#" + paramId);
+       if (paramsHolder.length==0) {
+         paramId=(elid + "-params").split(":").join("\\:");
+         paramsHolder = jQuery("#" + paramId);
+       }
+       params=JSON.parse(paramsHolder.val());
 
        // set style on select
        el.css("width",params.width + "px");
