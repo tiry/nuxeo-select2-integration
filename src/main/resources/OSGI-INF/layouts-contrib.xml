@@ -61,10 +61,16 @@
           <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
           <property name="documentSchemas">dublincore,common</property>
           <property name="customFormater">myformater</property>
+          <property name="inlinejs"> <![CDATA[
+  function myformater(doc) {
+   var markup = "<table><tr>";
+   markup += "<td><img src='/nuxeo" + doc.properties['common:icon'] + "'/></td>";
+   markup += "<td>" + doc.title + " (" + doc.properties['dc:creator'] + ")</td>";
+   markup += "</tr></table>";
+   return markup;
+  }]]></property>
         </properties>
       </widget>
-
-
 
       <widget name="select2_3" type="template">
         <labels>
@@ -84,6 +90,7 @@
           <property name="documentSchemas">dublincore,common</property>
           <property name="customFormater">myformater</property>
           <property name="idProperty">dc:creator</property>
+
         </properties>
       </widget>
 
