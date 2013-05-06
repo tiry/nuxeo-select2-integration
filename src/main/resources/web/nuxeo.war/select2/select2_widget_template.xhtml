@@ -6,23 +6,24 @@
   xmlns:nxl="http://nuxeo.org/nxforms/layout">
 
   <c:set var="namespace" value="#{widget.properties.namespace}" />
-  <c:set var="jsonParams" value="{&#34;width&#34;:#{widget.properties['width']},
-                                                         &#34;minimumInputLength&#34;:#{widget.properties['minimumInputLength']},
-                                                         &#34;query&#34;:&#34;#{widget.properties['query']}&#34;,
-                                                         &#34;documentSchemas&#34;:&#34;#{widget.properties['documentSchemas']}&#34;,
-                                                         &#34;customFormater&#34;:&#34;#{widget.properties['customFormater']}&#34;,
-                                                         &#34;idProperty&#34;:&#34;#{widget.properties['idProperty']}&#34;}" />
+  <c:set var="inlinejs" value="#{widget.properties.inlinejs}" />
+  <c:set var="jsonParams" value="#{select2ActionBean.encodeParameters(widget)}"/>
+  <c:set var="initValue" value="#{select2ActionBean.resolveSingleReference(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
 
-  mode = #{widget.mode}
   <c:if test="#{widget.mode == 'view' }">
-    <h:outputText value="#{field_0}"/>
+    <h:outputText value="#{select2ActionBean.resolveSingleReferenceLabel(field_0),widget.properties['initOperationId'],widget.properties['labelProperty']}"/>
   </c:if>
 
   <c:if test="#{widget.mode == 'edit' }">
 
+   <c:if test="#{inlinejs != null }">
+     <script><h:outputText value="#{inlinejs}" escape="false"/></script>
+   </c:if>
+
    <h:inputHidden id="#{widget.id}-select2" value="#{field_0}"/>
    <input type="hidden" id="#{widget.id}-select2-params" value="#{jsonParams}"/>
-    <h:message for="#{widget.id}-select2" styleClass="errorMessage" />
+   <input type="hidden" id="#{widget.id}-select2-init" value="#{initValue}"/>
+   <h:message for="#{widget.id}-select2" styleClass="errorMessage" />
   </c:if>
 
 </div>

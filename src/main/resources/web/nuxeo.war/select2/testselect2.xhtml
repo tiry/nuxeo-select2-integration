@@ -17,59 +17,7 @@
 
   <ui:define name="body">
 
-<h2> Test via template </h2>
-  <h:form>
-
-<table>
-<tr>
-<td> Simple </td>
-<td>
-   <ui:include src="/select2/select2_template.xhtml">
-    <ui:param name="selectid" value="one" />
-    <ui:param name="width" value="200" />
-    <ui:param name="minimumInputLength" value="3" />
-    <ui:param name="query" value="select * from Document where ecm:fulltext LIKE ?" />
-    <ui:param name="documentSchemas" value="dublincore" />
-   </ui:include>
-</td>
-</tr>
-
-<tr>
-<td> Custom formatting </td>
-<td>
-   <ui:include src="/select2/select2_template.xhtml">
-    <ui:param name="selectid" value="two" />
-    <ui:param name="width" value="400" />
-    <ui:param name="minimumInputLength" value="2" />
-    <ui:param name="query" value="select * from Document where ecm:fulltext LIKE ?" />
-    <ui:param name="documentSchemas" value="dublincore,common" />
-    <ui:param name="customFormater" value="myformater" />
-   </ui:include>
-</td>
-</tr>
-
-<tr>
-<td> Custom formatting with custom id</td>
-<td>
-   <ui:include src="/select2/select2_widget_template.xhtml">
-    <ui:param name="selectid" value="three" />
-    <ui:param name="width" value="400" />
-    <ui:param name="minimumInputLength" value="2" />
-    <ui:param name="query" value="select * from Document where ecm:fulltext LIKE ?" />
-    <ui:param name="documentSchemas" value="dublincore,common" />
-    <ui:param name="idProperty" value="dc:creator" />
-    <ui:param name="customFormater" value="myformater" />
-   </ui:include>
-</td>
-</tr>
-
-</table>
-
 <h2>Test with Layouts</h2>
-
-</h:form>
-
-#{currentDocument.title}
 
 <h:form>
  <nxl:layout name="testSelect2" mode="edit" value="#{currentDocument}"/>
@@ -82,6 +30,7 @@
 </h:form>
 
   <script src="/nuxeo/scripts/select2/select2.js"/>
+  <script src="/nuxeo/scripts/select2/nuxeo-select2.js"/>
 
   <script>
     <!--
@@ -94,81 +43,6 @@
   }
   -->
   </script>
-  <script>
-    <!--
-    jQuery(document).ready(function() {
-
-     jQuery('head').append('<link rel="stylesheet" href="/nuxeo/css/select2.css" type="text/css" />');
-
-     jQuery("input[type='hidden'][id$=select2]").each(function(idx,el) {
-
-       // retrieve parameters from Html
-       var elid = el.id;
-       var params = {};
-
-       el=jQuery(el);
-
-       var paramId = elid.split(":").reverse()[0] + "-params";
-       var paramsHolder = jQuery("#" + paramId);
-       if (paramsHolder.length==0) {
-         paramId=(elid + "-params").split(":").join("\\:");
-         paramsHolder = jQuery("#" + paramId);
-       }
-       params=JSON.parse(paramsHolder.val());
-
-       // set style on select
-       el.css("width",params.width + "px");
-
-       // init Automation Operation
-       var op = jQuery().automation('Document.PageProvider',{"documentSchemas":params.documentSchemas});
-       op.addParameter("query",params.query);
-       op.addParameter("page","0");
-       op.addParameter("pageSize","20");
-
-       // detect if we need custom result formating
-       var customFormaterFunction = null;
-       if (params.customFormater && params.customFormater.length>0) {
-          customFormaterFunction=eval(params.customFormater);
-       }
-
-       // build select2 parameters
-       var select2_params = {
-        minimumInputLength: params.minimumInputLength,
-        query: function (query) {
-          op.addParameter("queryParams", query.term + "%");
-          op.execute(function(data, textStatus,xhr) {
-            var results = [];
-            for ( i = 0; i < data.entries.length; i++) {
-              var doc = data.entries[i];
-              results.push(doc);
-            }
-            query.callback({results : results});
-          });
-       }}
-
-       // append custom result formater if needed
-       if (customFormaterFunction!=null) {
-         select2_params.formatResult = customFormaterFunction;
-         select2_params.formatSelection = function(doc) {return doc.title};
-       } else {
-         select2_params.formatResult = function(doc) {return doc.title};
-         select2_params.formatSelection = function(doc) {return doc.title};
-       }
-
-       // append id formater if needed
-       if (params.idProperty && params.idProperty.length>0) {
-          select2_params.id = function(doc) { return doc.properties[params.idProperty]; };
-       } else {
-          select2_params.id = function(doc) { return doc.uid; }
-       }
-
-       // init select2
-       el.select2(select2_params);
-     });
-   });
-   -->
-  </script>
-
 
   </ui:define>
 </nxthemes:composition>
