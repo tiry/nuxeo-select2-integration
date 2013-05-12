@@ -21,6 +21,9 @@ import java.io.BufferedOutputStream;
 import java.io.Serializable;
 import java.util.Map.Entry;
 
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,9 +52,26 @@ public class Select2ActionBeanBean implements Serializable {
 
     private static final Log log = LogFactory.getLog(Select2ActionBeanBean.class);
 
+    protected static final String SELECT2_RESOURCES_MARKER = "SELECT2_RESOURCES_MARKER";
+
     @In(create = true, required = false)
     protected transient CoreSession documentManager;
 
+
+    public boolean mustIncludeResources() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext!=null) {
+            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+
+            if (request.getAttribute(SELECT2_RESOURCES_MARKER)!=null) {
+                return false;
+            } else {
+                request.setAttribute(SELECT2_RESOURCES_MARKER, "done");
+                return true;
+            }
+        }
+        return false;
+    }
 
     protected DocumentModel resolveReference(String storedReference, String operationName) throws Exception {
 

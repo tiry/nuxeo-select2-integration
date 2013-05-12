@@ -16,6 +16,11 @@
 
   <c:if test="#{widget.mode == 'edit' }">
 
+   <c:if test="#{select2ActionBean.mustIncludeResources()}">
+     <script src="/nuxeo/scripts/select2/select2.js"/>
+     <script src="/nuxeo/scripts/select2/nuxeo-select2.js"/>
+   </c:if>
+
    <c:if test="#{inlinejs != null }">
      <script><h:outputText value="#{inlinejs}" escape="false"/></script>
    </c:if>
