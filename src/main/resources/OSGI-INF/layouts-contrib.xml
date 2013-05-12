@@ -24,7 +24,7 @@
         </row>
       </rows>
 
-      <widget name="select2_1" type="template">
+      <widget name="select2_1" type="select2">
         <labels>
           <label mode="any">Simple (source)</label>
         </labels>
@@ -33,9 +33,6 @@
           <field>dc:source</field>
         </fields>
         <properties mode="any">
-          <property name="template">
-            /select2/select2_widget_template.xhtml
-          </property>
           <property name="width">200</property>
           <property name="minimumInputLength">3</property>
           <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
@@ -44,7 +41,7 @@
       </widget>
 
 
-      <widget name="select2_2" type="template">
+      <widget name="select2_2" type="select2">
         <labels>
           <label mode="any">With format (format)</label>
         </labels>
@@ -53,9 +50,6 @@
           <field>dc:format</field>
         </fields>
         <properties mode="any">
-          <property name="template">
-            /select2/select2_widget_template.xhtml
-          </property>
           <property name="width">200</property>
           <property name="minimumInputLength">3</property>
           <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
@@ -72,7 +66,7 @@
         </properties>
       </widget>
 
-      <widget name="select2_3" type="template">
+      <widget name="select2_3" type="select2">
         <labels>
           <label mode="any">Custom format + custom id (rights)</label>
         </labels>
@@ -81,16 +75,12 @@
           <field>dc:rights</field>
         </fields>
         <properties mode="any">
-          <property name="template">
-            /select2/select2_widget_template.xhtml
-          </property>
           <property name="width">200</property>
           <property name="minimumInputLength">3</property>
           <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
           <property name="documentSchemas">dublincore,common</property>
           <property name="customFormater">myformater</property>
           <property name="idProperty">dc:creator</property>
-
         </properties>
       </widget>
 

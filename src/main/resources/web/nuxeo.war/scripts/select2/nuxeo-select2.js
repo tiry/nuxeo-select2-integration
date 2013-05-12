@@ -26,7 +26,7 @@
 
        // determine operation name
        var opName = params.operationId;
-       if(typeof(opName)=='undefined'){
+       if(typeof(opName)=='undefined' || opName==''){
          opName = 'Document.PageProvider';
        }
 

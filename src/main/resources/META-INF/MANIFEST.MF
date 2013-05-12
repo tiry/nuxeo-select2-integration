@@ -4,8 +4,8 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-Version: 5.7-I20130430_0116
 Bundle-Name: nuxeo-select2-integration
-Nuxeo-Component: OSGI-INF/layouts-contrib.xml,OSGI-INF/extensions/org.
- nuxeo.ui.select2.Select2ActionBeanBean.xml
+Nuxeo-Component: OSGI-INF/widgettypes-contrib.xml,OSGI-INF/layouts-con
+ trib.xml
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: nuxeo-select2-integration
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
