@@ -28,6 +28,9 @@
         <row>
           <widget>select2E</widget>
         </row>
+        <row>
+          <widget>relou</widget>
+        </row>
       </rows>
 
       <widget name="select2A" type="select2">
@@ -136,6 +139,19 @@
           <property name="hideSubLabels">true</property>
         </properties>
    </widget>
+
+      <widget name="relou" type="text">
+        <labels>
+          <label mode="any">required</label>
+        </labels>
+        <translated>true</translated>
+        <fields>
+          <field>dc:nature</field>
+        </fields>
+        <properties mode="any">
+          <property name="required">true</property>
+        </properties>
+      </widget>
 
     </layout>
 

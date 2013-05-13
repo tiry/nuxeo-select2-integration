@@ -25,6 +25,7 @@
   <c:if test="#{widget.mode == 'edit' }">
 
    <c:if test="#{select2Actions.mustIncludeResources()}">
+     <script>console.log("integrate resources !");</script>
      <script src="/nuxeo/scripts/select2/select2.js"/>
      <script src="/nuxeo/scripts/select2/nuxeo-select2.js"/>
    </c:if>
@@ -38,7 +39,7 @@
    </c:if>
 
    <c:if test="#{!select2Actions.isMultiSelection(widget)}">
-     <h:inputHidden id="#{widget.id}-select2" value="#{field_0}"/>
+     <h:inputHidden id="#{widget.id}-select2" value="#{field_0}" valueChangeListener="#{select2Actions.valueChanged}"/>
      <h:inputHidden readonly="true" id="#{widget.id}-select2-init" value="#{select2Actions.resolveSingleReference(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
    </c:if>
 
@@ -51,6 +52,7 @@
 
    <h:inputHidden readonly="true" id="#{widget.id}-select2-params" value="#{jsonParams}"/>
    <h:message for="#{widget.id}-select2" styleClass="errorMessage" />
+
   </c:if>
 
 

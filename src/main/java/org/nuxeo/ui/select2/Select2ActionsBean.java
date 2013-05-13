@@ -23,13 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonGenerator;
+import org.jboss.el.ValueExpressionLiteral;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -244,4 +248,14 @@ public class Select2ActionsBean implements Serializable {
         return new String(baos.toByteArray(), "UTF-8");
     }
 
+    public void valueChanged(ValueChangeEvent evt) {
+        Object value = evt.getNewValue();
+        String sourceId = evt.getComponent().getId();
+        UIComponent initComponent = evt.getComponent().getParent().findComponent(sourceId + "-init");
+        if (initComponent!=null) {
+            HtmlInputHidden input = (HtmlInputHidden) initComponent;
+            input.setValueExpression("field_0", new ValueExpressionLiteral(value, String.class));
+            input.resetValue();
+        }
+    }
 }
