@@ -46,13 +46,13 @@ import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.platform.forms.layout.api.Widget;
 import org.nuxeo.runtime.api.Framework;
 
-@Name("select2ActionBean")
+@Name("select2Actions")
 @Scope(ScopeType.EVENT)
-public class Select2ActionBeanBean implements Serializable {
+public class Select2ActionsBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Log log = LogFactory.getLog(Select2ActionBeanBean.class);
+    private static final Log log = LogFactory.getLog(Select2ActionsBean.class);
 
     protected static final String SELECT2_RESOURCES_MARKER = "SELECT2_RESOURCES_MARKER";
 
