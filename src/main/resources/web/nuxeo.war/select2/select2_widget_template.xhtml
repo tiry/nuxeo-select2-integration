@@ -3,15 +3,22 @@
   xmlns:c="http://java.sun.com/jstl/core"
   xmlns:nxu="http://nuxeo.org/nxweb/util"
   xmlns:nxd="http://nuxeo.org/nxweb/document"
-  xmlns:nxl="http://nuxeo.org/nxforms/layout">
+  xmlns:nxl="http://nuxeo.org/nxforms/layout"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
 
   <c:set var="namespace" value="#{widget.properties.namespace}" />
   <c:set var="inlinejs" value="#{widget.properties.inlinejs}" />
   <c:set var="jsonParams" value="#{select2ActionBean.encodeParameters(widget)}"/>
-  <c:set var="initValue" value="#{select2ActionBean.resolveSingleReference(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
 
   <c:if test="#{widget.mode == 'view' }">
-    <h:outputText value="#{select2ActionBean.resolveSingleReferenceLabel(field_0),widget.properties['initOperationId'],widget.properties['labelProperty']}"/>
+    <c:if test="#{!select2ActionBean.isMultiSelection(widget)}">
+      <h:outputText value="#{select2ActionBean.resolveSingleReferenceLabel(field_0,widget.properties['initOperationId'],widget.properties['labelProperty'])}"/>
+    </c:if>
+    <c:if test="#{select2ActionBean.isMultiSelection(widget)}">
+      <ui:repeat value="#{select2ActionBean.resolveMultipleReferenceLabels(field_0,widget.properties['initOperationId'],widget.properties['labelProperty'])}" var="label">
+        <h:outputText value="#{label}"/><br/>
+      </ui:repeat>
+    </c:if>
   </c:if>
 
   <c:if test="#{widget.mode == 'edit' }">

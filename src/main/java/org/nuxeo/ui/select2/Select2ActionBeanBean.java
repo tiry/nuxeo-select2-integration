@@ -188,6 +188,44 @@ public class Select2ActionBeanBean implements Serializable {
         return doc.getTitle();
     }
 
+
+    public List<String> resolveMultipleReferenceLabels(Object value, String operationName, String label) throws Exception {
+
+        List<String> result = new ArrayList<>();
+
+        if (value==null) {
+            return result;
+        }
+
+        List<String> storedRefs = new ArrayList<>();
+        if (value instanceof List) {
+            for (Object v : (List) value) {
+                storedRefs.add(v.toString());
+            }
+        } else if (value instanceof Object[]) {
+            for (Object v : (Object[]) value) {
+                storedRefs.add(v.toString());
+            }
+        }
+
+        for (String ref : storedRefs) {
+            DocumentModel doc = resolveReference(ref, operationName);
+            if (doc!=null) {
+                if (label!=null && ! label.isEmpty()){
+                    Object val = doc.getPropertyValue(label);
+                    if (val==null) {
+                        result.add("");
+                    } else {
+                        result.add(val.toString());
+                    }
+                } else {
+                  result.add(doc.getTitle());
+                }
+            }
+        }
+        return result;
+    }
+
     public String encodeParameters(Widget widget) throws Exception {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

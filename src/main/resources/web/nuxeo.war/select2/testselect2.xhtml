@@ -17,7 +17,7 @@
 
   <ui:define name="body">
 
-<h2>Test with Layouts</h2>
+<h2>Test with Layouts in Edit mode</h2>
 
 <h:form>
  <nxl:layout name="testSelect2" mode="edit" value="#{currentDocument}"/>
@@ -30,6 +30,11 @@
 </h:form>
 
 
+<h2>Test with Layouts in View mode</h2>
+
+<h:form>
+ <nxl:layout name="testSelect2" mode="view" value="#{currentDocument}"/>
+</h:form>
 
   </ui:define>
 </nxthemes:composition>
