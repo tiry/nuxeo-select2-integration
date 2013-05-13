@@ -25,18 +25,19 @@
      <script><h:outputText value="#{inlinejs}" escape="false"/></script>
    </c:if>
 
-   <c:if test="#{!select2ActionBean.needsConverter(widget)}">
+   <c:if test="#{!select2ActionBean.isMultiSelection(widget)}">
      <h:inputHidden id="#{widget.id}-select2" value="#{field_0}"/>
+     <input type="hidden" id="#{widget.id}-select2-init" value="#{select2ActionBean.resolveSingleReference(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
    </c:if>
 
-   <c:if test="#{select2ActionBean.needsConverter(widget)}">
+   <c:if test="#{select2ActionBean.isMultiSelection(widget)}">
      <h:inputHidden id="#{widget.id}-select2" value="#{field_0}">
        <f:converter converterId="select2Converter"></f:converter>
      </h:inputHidden>
+     <input type="hidden" id="#{widget.id}-select2-init" value="#{select2ActionBean.resolveMultipleReferences(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
    </c:if>
 
    <input type="hidden" id="#{widget.id}-select2-params" value="#{jsonParams}"/>
-   <input type="hidden" id="#{widget.id}-select2-init" value="#{initValue}"/>
    <h:message for="#{widget.id}-select2" styleClass="errorMessage" />
   </c:if>
 

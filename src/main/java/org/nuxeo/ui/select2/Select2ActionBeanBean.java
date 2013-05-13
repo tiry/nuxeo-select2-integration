@@ -19,6 +19,8 @@ package org.nuxeo.ui.select2;
 
 import java.io.BufferedOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.faces.context.FacesContext;
@@ -57,7 +59,7 @@ public class Select2ActionBeanBean implements Serializable {
     @In(create = true, required = false)
     protected transient CoreSession documentManager;
 
-    public boolean needsConverter(Widget widget) {
+    public boolean isMultiSelection(Widget widget) {
         if (widget.getProperty("multiple")!=null && widget.getProperty("multiple").toString().equalsIgnoreCase("true")) {
             return true;
         }
@@ -121,6 +123,51 @@ public class Select2ActionBeanBean implements Serializable {
         JsonDocumentWriter.writeDocument(out, doc, schemas);
         out.flush();
         return new String(baos.toByteArray(), "UTF-8");
+    }
+
+    public String resolveMultipleReferences(Object value, String operationName, String schemaNames) throws Exception {
+
+        if (value==null) {
+            return "[]";
+        }
+
+        List<String> storedRefs = new ArrayList<>();
+        if (value instanceof List) {
+            for (Object v : (List) value) {
+                storedRefs.add(v.toString());
+            }
+        } else if (value instanceof Object[]) {
+            for (Object v : (Object[]) value) {
+                storedRefs.add(v.toString());
+            }
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        BufferedOutputStream out = new BufferedOutputStream(baos);
+        JsonGenerator jg = JsonWriter.createGenerator(out);
+        String[] schemas = null;
+        if (schemaNames!=null && ! schemaNames.isEmpty()) {
+            schemas = schemaNames.split(",");
+        }
+        jg.writeStartArray();
+
+        for (String ref : storedRefs) {
+            DocumentModel doc = resolveReference(ref, operationName);
+            if (doc==null) {
+                return "";
+            }
+            JsonDocumentWriter.writeDocument(jg, doc, schemas);
+        }
+
+        jg.writeEndArray();
+        out.flush();
+        String json =  new String(baos.toByteArray(), "UTF-8");
+
+        if (!json.endsWith("]")) { // XXX !!!
+            json = json + "]";
+        }
+
+        return json;
     }
 
     public String resolveSingleReferenceLabel(String storedReference, String operationName, String label) throws Exception {

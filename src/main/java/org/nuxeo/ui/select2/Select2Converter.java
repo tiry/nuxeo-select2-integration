@@ -21,7 +21,7 @@ public class Select2Converter implements Serializable, Converter {
     protected static final String SEP = ",";
 
 
-    protected String getSeparator() {
+    public static String getSeparator() {
         return SEP;
     }
 
