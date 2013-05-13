@@ -57,6 +57,12 @@ public class Select2ActionBeanBean implements Serializable {
     @In(create = true, required = false)
     protected transient CoreSession documentManager;
 
+    public boolean needsConverter(Widget widget) {
+        if (widget.getProperty("multiple")!=null && widget.getProperty("multiple").toString().equalsIgnoreCase("true")) {
+            return true;
+        }
+        return false;
+    }
 
     public boolean mustIncludeResources() {
         FacesContext facesContext = FacesContext.getCurrentInstance();

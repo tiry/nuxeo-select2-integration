@@ -85,6 +85,11 @@
          };
        }
 
+       if (params.multiple=='true') {
+           select2_params.maximumSelectionSize=params.maximumSelectionSize;
+           select2_params.multiple=true;
+       }
+
        // init select2
        el.select2(select2_params);
      });

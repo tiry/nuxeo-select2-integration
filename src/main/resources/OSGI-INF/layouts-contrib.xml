@@ -22,6 +22,9 @@
         <row>
           <widget>select2_3</widget>
         </row>
+        <row>
+          <widget>select2_4</widget>
+        </row>
       </rows>
 
       <widget name="select2_1" type="select2">
@@ -36,7 +39,7 @@
           <property name="width">200</property>
           <property name="minimumInputLength">3</property>
           <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
-          <property name="documentSchemas">dubincore</property>
+          <property name="documentSchemas">dublincore</property>
         </properties>
       </widget>
 
@@ -84,6 +87,24 @@
         </properties>
       </widget>
 
+
+   <widget name="select2_4" type="select2">
+        <labels>
+          <label mode="any">Multiple (subjects)</label>
+        </labels>
+        <translated>true</translated>
+        <fields>
+          <field>dc:subjects</field>
+        </fields>
+        <properties mode="any">
+          <property name="width">400</property>
+          <property name="minimumInputLength">3</property>
+          <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
+          <property name="documentSchemas">dublincore</property>
+          <property name="multiple">true</property>
+          <property name="maximumSelectionSize">3</property>
+        </properties>
+      </widget>
     </layout>
 
 
