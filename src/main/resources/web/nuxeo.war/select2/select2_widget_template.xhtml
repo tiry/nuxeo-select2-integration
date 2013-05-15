@@ -7,68 +7,67 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:a4j="https://ajax4jsf.dev.java.net/ajax">
 
-  <c:set var="namespace" value="#{widget.properties.namespace}" />
-  <c:set var="inlinejs" value="#{widget.properties.inlinejs}" />
-  <c:set var="jsonParams" value="#{select2Actions.encodeParameters(widget)}"/>
+  <c:set var="namespace" value="#{widgetProperty_namespace}" />
 
-  <c:if test="#{widget.mode == 'view' }">
+  <c:if test="#{widget.mode == 'view'}">
+
     <c:if test="#{!select2Actions.isMultiSelection(widget)}">
-      <h:outputText value="#{select2Actions.resolveSingleReferenceLabel(field_0,widget.properties['initOperationId'],widget.properties['labelProperty'])}"/>
+      <h:outputText value="#{select2Actions.resolveSingleReferenceLabel(field_0, widgetProperty_initOperationId, widgetProperty_labelProperty)}" />
     </c:if>
+
     <c:if test="#{select2Actions.isMultiSelection(widget)}">
-      <ui:repeat value="#{select2Actions.resolveMultipleReferenceLabels(field_0,widget.properties['initOperationId'],widget.properties['labelProperty'])}" var="label">
+      <c:forEach var="label"
+        items="#{select2Actions.resolveMultipleReferenceLabels(field_0, widgetProperty_initOperationId, widgetProperty_labelProperty)}">
         <h:outputText value="#{label}"/><br/>
-      </ui:repeat>
+      </c:forEach>
     </c:if>
+
   </c:if>
 
-  <c:if test="#{widget.mode == 'edit' }">
+  <c:if test="#{widget.mode == 'edit'}">
 
-   <c:if test="#{select2Actions.mustIncludeResources()}">
+    <c:set var="jsonParams" value="#{select2Actions.encodeParameters(widget)}" />
+
+    <c:if test="#{select2Actions.mustIncludeResources()}">
      <script>console.log("integrate resources !");</script>
      <script src="/nuxeo/scripts/select2/select2.js"/>
      <script src="/nuxeo/scripts/select2/nuxeo-select2.js"/>
-   </c:if>
+    </c:if>
 
-   <c:if test="#{request.getParameter('AJAXREQUEST') != null}">
+    <c:if test="#{request.getParameter('AJAXREQUEST') != null}">
      <script>initSelect2Widgets();</script>
-   </c:if>
+    </c:if>
 
-   <c:if test="#{inlinejs != null }">
-     <script><h:outputText value="#{inlinejs}" escape="false"/></script>
-   </c:if>
+    <c:if test="#{widgetProperty_inlinejs != null }">
+     <script><h:outputText value="#{widgetProperty_inlinejs}" escape="false"/></script>
+    </c:if>
 
-   <c:if test="#{!select2Actions.isMultiSelection(widget)}">
-     <h:inputHidden id="#{widget.id}_select2" value="#{field_0}" valueChangeListener="#{select2Actions.valueChanged}"/>
-     <nxu:valueHolder id="#{widget.id}_select2_vh" value="#{field_0}" var="initValue" submitValue="false">
-         <h:inputHidden readonly="true" id="#{widget.id}_select2_init" value="#{select2Actions.resolveSingleReference(initValue,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
-         <h:inputText readonly="true" id="#{widget.id}_select2_init2" value="#{select2Actions.resolveSingleReference(initValue,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
-       field_0=#{field_0}
-       initValue = #{initValue}
-       rowData = #{model.rowData}
-     </nxu:valueHolder>
-  </c:if>
+    <c:if test="#{!select2Actions.isMultiSelection(widget)}">
+      <h:inputHidden id="#{widget.id}_select2" value="#{field_0}"
+        valueChangeListener="#{select2Actions.valueChanged}"/>
+      <nxu:valueHolder id="#{widget.id}_select2_vh"
+        value="#{field_0}" var="initValue" submitValue="false">
+        field_0=#{field_0}
+        initValue = #{initValue}
+        rowData = #{model.rowData}
+        <h:inputHidden readonly="true" id="#{widget.id}_select2_init"
+          value="#{select2Actions.resolveSingleReference(initValue, widgetProperty_initOperationId, widgetProperty_documentSchemas)}" />
+        <h:inputText readonly="true" id="#{widget.id}_select2_init2"
+          value="#{select2Actions.resolveSingleReference(initValue, widgetProperty_initOperationId, widgetProperty_documentSchemas)}" />
+      </nxu:valueHolder>
+    </c:if>
 
-  <c:if test="false">
-   <c:if test="#{!select2Actions.isMultiSelection(widget)}">
-     <h:inputHidden id="#{widget.id}_select2" value="#{field_0}" valueChangeListener="#{select2Actions.valueChanged}"/>
-    <nxu:set id="#{widget.id}_select2_alias" value="#{field_0}" var="initValue">
-     <h:inputHidden readonly="true" id="#{widget.id}_select2_init" value="#{select2Actions.resolveSingleReference(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
-    </nxu:set>
-   </c:if>
-   </c:if>
+    <c:if test="#{select2Actions.isMultiSelection(widget)}">
+      <h:inputHidden id="#{widget.id}_select2" value="#{field_0}">
+        <f:converter converterId="select2Converter"></f:converter>
+      </h:inputHidden>
+      <h:inputHidden readonly="true" id="#{widget.id}_select2_init"
+        value="#{select2Actions.resolveMultipleReferences(field_0, widgetProperty_initOperationId,widgetProperty_documentSchemas)}" />
+    </c:if>
 
-   <c:if test="#{select2Actions.isMultiSelection(widget)}">
-     <h:inputHidden id="#{widget.id}_select2" value="#{field_0}">
-       <f:converter converterId="select2Converter"></f:converter>
-     </h:inputHidden>
-     <h:inputHidden readonly="true" id="#{widget.id}_select2_init" value="#{select2Actions.resolveMultipleReferences(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
-   </c:if>
-
-   <h:inputHidden readonly="true" id="#{widget.id}_select2_params" value="#{jsonParams}"/>
-   <h:message for="#{widget.id}_select2" styleClass="errorMessage" />
+    <h:inputHidden readonly="true" id="#{widget.id}_select2_params" value="#{jsonParams}"/>
+    <h:message for="#{widget.id}_select2" styleClass="errorMessage" />
 
   </c:if>
-
 
 </div>
