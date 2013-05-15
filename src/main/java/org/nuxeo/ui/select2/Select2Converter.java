@@ -20,7 +20,6 @@ public class Select2Converter implements Serializable, Converter {
 
     protected static final String SEP = ",";
 
-
     public static String getSeparator() {
         return SEP;
     }
@@ -28,7 +27,7 @@ public class Select2Converter implements Serializable, Converter {
     @Override
     public Object getAsObject(FacesContext context, UIComponent component,
             String value) {
-        if (value==null) {
+        if (value == null) {
             return null;
         } else {
             String[] values = value.split(getSeparator());
@@ -37,12 +36,13 @@ public class Select2Converter implements Serializable, Converter {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public String getAsString(FacesContext context, UIComponent component,
             Object value) {
-        if (value==null) {
+        if (value == null) {
             return null;
         } else {
-            String stringValue="";
+            String stringValue = "";
             if (value instanceof List) {
                 for (Object v : (List) value) {
                     stringValue += v.toString() + getSeparator();
@@ -53,7 +53,8 @@ public class Select2Converter implements Serializable, Converter {
                 }
             }
             if (stringValue.endsWith(getSeparator())) {
-                stringValue = stringValue.substring(0, stringValue.length() - getSeparator().length());
+                stringValue = stringValue.substring(0, stringValue.length()
+                        - getSeparator().length());
             }
             return stringValue;
         }
