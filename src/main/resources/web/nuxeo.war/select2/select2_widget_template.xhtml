@@ -43,26 +43,20 @@
     </c:if>
 
     <c:if test="#{!select2Actions.isMultiSelection(widget)}">
-      <h:inputHidden id="#{widget.id}_select2" value="#{field_0}"
-        valueChangeListener="#{select2Actions.valueChanged}"/>
-      <nxu:valueHolder id="#{widget.id}_select2_vh"
-        value="#{field_0}" var="initValue" submitValue="false">
-        field_0=#{field_0}
-        initValue = #{initValue}
-        rowData = #{model.rowData}
+      <nxu:valueHolder id="#{widget.id}_select2"
+        value="#{field_0}" var="currentValue">
         <h:inputHidden readonly="true" id="#{widget.id}_select2_init"
-          value="#{select2Actions.resolveSingleReference(initValue, widgetProperty_initOperationId, widgetProperty_documentSchemas)}" />
-        <h:inputText readonly="true" id="#{widget.id}_select2_init2"
-          value="#{select2Actions.resolveSingleReference(initValue, widgetProperty_initOperationId, widgetProperty_documentSchemas)}" />
+          value="#{select2Actions.resolveSingleReference(currentValue, widgetProperty_initOperationId, widgetProperty_documentSchemas)}" />
       </nxu:valueHolder>
     </c:if>
 
     <c:if test="#{select2Actions.isMultiSelection(widget)}">
-      <h:inputHidden id="#{widget.id}_select2" value="#{field_0}">
+      <nxu:valueHolder id="#{widget.id}_select2"
+        value="#{field_0}" var="currentValue">
         <f:converter converterId="select2Converter"></f:converter>
-      </h:inputHidden>
-      <h:inputHidden readonly="true" id="#{widget.id}_select2_init"
-        value="#{select2Actions.resolveMultipleReferences(field_0, widgetProperty_initOperationId,widgetProperty_documentSchemas)}" />
+        <h:inputHidden readonly="true" id="#{widget.id}_select2_init"
+          value="#{select2Actions.resolveMultipleReferences(currentValue, widgetProperty_initOperationId, widgetProperty_documentSchemas)}" />
+      </nxu:valueHolder>
     </c:if>
 
     <h:inputHidden readonly="true" id="#{widget.id}_select2_params" value="#{jsonParams}"/>
