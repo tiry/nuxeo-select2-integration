@@ -29,13 +29,12 @@
     <c:set var="jsonParams" value="#{select2Actions.encodeParameters(widget)}" />
 
     <c:if test="#{select2Actions.mustIncludeResources()}">
-     <script>console.log("integrate resources !");</script>
      <script src="/nuxeo/scripts/select2/select2.js"/>
      <script src="/nuxeo/scripts/select2/nuxeo-select2.js"/>
     </c:if>
 
     <c:if test="#{request.getParameter('AJAXREQUEST') != null}">
-     <script>initSelect2Widgets();</script>
+     <script>initSelect2AjaxWidget("#{widget.id}", "#{model.rowIndex}");</script>
     </c:if>
 
     <c:if test="#{widgetProperty_inlinejs != null }">
