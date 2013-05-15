@@ -23,23 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.faces.component.EditableValueHolder;
-import javax.faces.component.UIComponent;
-import javax.faces.component.ValueHolder;
-import javax.faces.component.html.HtmlInputHidden;
-import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonGenerator;
-import org.jboss.el.ValueExpressionLiteral;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -56,15 +46,13 @@ import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.platform.forms.layout.api.Widget;
 import org.nuxeo.runtime.api.Framework;
 
-import com.sun.facelets.FaceletContext;
-import com.sun.facelets.el.TagValueExpression;
-
 @Name("select2Actions")
 @Scope(ScopeType.EVENT)
 public class Select2ActionsBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @SuppressWarnings("unused")
     private static final Log log = LogFactory.getLog(Select2ActionsBean.class);
 
     protected static final String SELECT2_RESOURCES_MARKER = "SELECT2_RESOURCES_MARKER";
@@ -73,7 +61,9 @@ public class Select2ActionsBean implements Serializable {
     protected transient CoreSession documentManager;
 
     public boolean isMultiSelection(Widget widget) {
-        if (widget.getProperty("multiple")!=null && widget.getProperty("multiple").toString().equalsIgnoreCase("true")) {
+        if (widget.getProperty("multiple") != null
+                && widget.getProperty("multiple").toString().equalsIgnoreCase(
+                        "true")) {
             return true;
         }
         return false;
@@ -81,10 +71,10 @@ public class Select2ActionsBean implements Serializable {
 
     public boolean mustIncludeResources() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext!=null) {
+        if (facesContext != null) {
             HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 
-            if (request.getAttribute(SELECT2_RESOURCES_MARKER)!=null) {
+            if (request.getAttribute(SELECT2_RESOURCES_MARKER) != null) {
                 return false;
             } else {
                 request.setAttribute(SELECT2_RESOURCES_MARKER, "done");
@@ -94,14 +84,15 @@ public class Select2ActionsBean implements Serializable {
         return false;
     }
 
-    protected DocumentModel resolveReference(String storedReference, String operationName) throws Exception {
+    protected DocumentModel resolveReference(String storedReference,
+            String operationName) throws Exception {
 
-        if (storedReference==null || storedReference.isEmpty()) {
+        if (storedReference == null || storedReference.isEmpty()) {
             return null;
         }
         DocumentModel doc = null;
 
-        if (operationName==null || operationName.isEmpty()) {
+        if (operationName == null || operationName.isEmpty()) {
             DocumentRef ref = null;
             if (storedReference.startsWith("/")) {
                 ref = new PathRef(storedReference);
@@ -120,14 +111,15 @@ public class Select2ActionsBean implements Serializable {
         return doc;
     }
 
-    public String resolveSingleReference(String storedReference, String operationName, String schemaNames) throws Exception {
+    public String resolveSingleReference(String storedReference,
+            String operationName, String schemaNames) throws Exception {
 
         DocumentModel doc = resolveReference(storedReference, operationName);
-        if (doc==null) {
+        if (doc == null) {
             return "";
         }
         String[] schemas = null;
-        if (schemaNames!=null && ! schemaNames.isEmpty()) {
+        if (schemaNames != null && !schemaNames.isEmpty()) {
             schemas = schemaNames.split(",");
         }
 
@@ -138,9 +130,11 @@ public class Select2ActionsBean implements Serializable {
         return new String(baos.toByteArray(), "UTF-8");
     }
 
-    public String resolveMultipleReferences(Object value, String operationName, String schemaNames) throws Exception {
+    @SuppressWarnings("rawtypes")
+    public String resolveMultipleReferences(Object value, String operationName,
+            String schemaNames) throws Exception {
 
-        if (value==null) {
+        if (value == null) {
             return "[]";
         }
 
@@ -159,14 +153,14 @@ public class Select2ActionsBean implements Serializable {
         BufferedOutputStream out = new BufferedOutputStream(baos);
         JsonGenerator jg = JsonWriter.createGenerator(out);
         String[] schemas = null;
-        if (schemaNames!=null && ! schemaNames.isEmpty()) {
+        if (schemaNames != null && !schemaNames.isEmpty()) {
             schemas = schemaNames.split(",");
         }
         jg.writeStartArray();
 
         for (String ref : storedRefs) {
             DocumentModel doc = resolveReference(ref, operationName);
-            if (doc==null) {
+            if (doc == null) {
                 return "";
             }
             JsonDocumentWriter.writeDocument(jg, doc, schemas);
@@ -174,7 +168,7 @@ public class Select2ActionsBean implements Serializable {
 
         jg.writeEndArray();
         out.flush();
-        String json =  new String(baos.toByteArray(), "UTF-8");
+        String json = new String(baos.toByteArray(), "UTF-8");
 
         if (!json.endsWith("]")) { // XXX !!!
             json = json + "]";
@@ -183,16 +177,17 @@ public class Select2ActionsBean implements Serializable {
         return json;
     }
 
-    public String resolveSingleReferenceLabel(String storedReference, String operationName, String label) throws Exception {
+    public String resolveSingleReferenceLabel(String storedReference,
+            String operationName, String label) throws Exception {
 
         DocumentModel doc = resolveReference(storedReference, operationName);
-        if (doc==null) {
+        if (doc == null) {
             return "";
         }
 
-        if (label!=null && ! label.isEmpty()){
+        if (label != null && !label.isEmpty()) {
             Object val = doc.getPropertyValue(label);
-            if (val==null) {
+            if (val == null) {
                 return "";
             } else {
                 return val.toString();
@@ -201,12 +196,13 @@ public class Select2ActionsBean implements Serializable {
         return doc.getTitle();
     }
 
-
-    public List<String> resolveMultipleReferenceLabels(Object value, String operationName, String label) throws Exception {
+    @SuppressWarnings("rawtypes")
+    public List<String> resolveMultipleReferenceLabels(Object value,
+            String operationName, String label) throws Exception {
 
         List<String> result = new ArrayList<>();
 
-        if (value==null) {
+        if (value == null) {
             return result;
         }
 
@@ -223,16 +219,16 @@ public class Select2ActionsBean implements Serializable {
 
         for (String ref : storedRefs) {
             DocumentModel doc = resolveReference(ref, operationName);
-            if (doc!=null) {
-                if (label!=null && ! label.isEmpty()){
+            if (doc != null) {
+                if (label != null && !label.isEmpty()) {
                     Object val = doc.getPropertyValue(label);
-                    if (val==null) {
+                    if (val == null) {
                         result.add("");
                     } else {
                         result.add(val.toString());
                     }
                 } else {
-                  result.add(doc.getTitle());
+                    result.add(doc.getTitle());
                 }
             }
         }
@@ -257,65 +253,4 @@ public class Select2ActionsBean implements Serializable {
         return new String(baos.toByteArray(), "UTF-8");
     }
 
-    public void valueChanged(ValueChangeEvent evt) {
-        // variant using Value Holder to manage the indirection
-        Object value = evt.getNewValue();
-        String sourceId = evt.getComponent().getId();
-        UIComponent valueHolderComponent = evt.getComponent().getParent().findComponent(sourceId + "_vh");
-
-        if (valueHolderComponent!=null) {
-            EditableValueHolder vh = (EditableValueHolder) valueHolderComponent;
-            vh.setValue(value);
-            vh.setSubmittedValue(value);
-        }
-    }
-
-    public void valueChangedHack(ValueChangeEvent evt) {
-        Object value = evt.getNewValue();
-        String sourceId = evt.getComponent().getId();
-        UIComponent initComponent = evt.getComponent().getParent().findComponent(sourceId + "_init");
-
-        if (initComponent!=null) {
-            HtmlInputHidden input = (HtmlInputHidden) initComponent;
-            //input.resetValue();
-
-            // extract el
-            ValueExpression ve = input.getValueExpression("value");
-            String el = ve.getExpressionString();
-
-            // rewrite el to bind to a temp variable
-            //el = el.replace("field_0", "tmp_init_field");
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            ELContext elContext = facesContext.getELContext();
-
-            // create a temp variable
-            ValueExpression literalValue = facesContext.getApplication().getExpressionFactory().createValueExpression(value, String.class);
-            elContext.getVariableMapper().setVariable("field_0", literalValue);
-
-            // rebuild the ValueExpression and rebind the input
-            ValueExpression initValueExpression = facesContext.getApplication().getExpressionFactory().createValueExpression(elContext, el, Object.class);
-            input.setValueExpression("value", initValueExpression);
-        }
-
-        /*
-        if (initComponent2!=null) {
-            HtmlInputText input = (HtmlInputText) initComponent2;
-            input.resetValue();
-            ValueExpression ve = input.getValueExpression("value");
-            String el = ve.getExpressionString();
-
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            ELContext elContext = facesContext.getELContext();
-
-            ValueExpression ve2 = facesContext.getApplication().getExpressionFactory().createValueExpression(value, String.class);
-
-            elContext.getVariableMapper().setVariable("initValue", ve2);
-
-            ValueExpression ve3 = facesContext.getApplication().getExpressionFactory().createValueExpression(elContext, el, Object.class);
-
-            input.setValueExpression("value", ve3);
-
-        }*/
-
-    }
 }

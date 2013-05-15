@@ -44,7 +44,9 @@
         <properties mode="any">
           <property name="width">200</property>
           <property name="minimumInputLength">3</property>
-          <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
+          <property name="query">
+            select * from Document where ecm:fulltext LIKE ?
+          </property>
           <property name="documentSchemas">dublincore</property>
         </properties>
       </widget>
@@ -60,7 +62,9 @@
         <properties mode="any">
           <property name="width">200</property>
           <property name="minimumInputLength">3</property>
-          <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
+          <property name="query">
+            select * from Document where ecm:fulltext LIKE ?
+          </property>
           <property name="documentSchemas">dublincore,common</property>
           <property name="customFormater">myformater</property>
           <property name="inlinejs"> <![CDATA[
@@ -85,14 +89,16 @@
         <properties mode="any">
           <property name="width">200</property>
           <property name="minimumInputLength">3</property>
-          <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
+          <property name="query">
+            select * from Document where ecm:fulltext LIKE ?
+          </property>
           <property name="documentSchemas">dublincore,common</property>
           <property name="customFormater">myformater</property>
           <property name="idProperty">dc:creator</property>
         </properties>
       </widget>
 
-   <widget name="select2D" type="select2">
+      <widget name="select2D" type="select2">
         <labels>
           <label mode="any">Multiple (subjects)</label>
         </labels>
@@ -103,14 +109,16 @@
         <properties mode="any">
           <property name="width">400</property>
           <property name="minimumInputLength">3</property>
-          <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
+          <property name="query">
+            select * from Document where ecm:fulltext LIKE ?
+          </property>
           <property name="documentSchemas">dublincore</property>
           <property name="multiple">true</property>
           <property name="maximumSelectionSize">3</property>
         </properties>
-   </widget>
+      </widget>
 
-   <widget name="select2E" type="list">
+      <widget name="select2E" type="list">
         <labels>
           <label mode="any">List (buggy because bound to dc:contributors)</label>
         </labels>
@@ -119,26 +127,28 @@
           <field>dc:contributors</field>
         </fields>
         <subWidgets>
-           <widget name="select2F" type="select2">
-                <labels>
-                  <label mode="any"></label>
-                </labels>
-                <translated>true</translated>
-                <fields>
-                  <field></field>
-                </fields>
-                <properties mode="any">
-                  <property name="width">400</property>
-                  <property name="minimumInputLength">3</property>
-                  <property name="query">select * from Document where ecm:fulltext LIKE ?</property>
-                  <property name="documentSchemas">dublincore</property>
-                </properties>
-           </widget>
+          <widget name="select2F" type="select2">
+            <labels>
+              <label mode="any"></label>
+            </labels>
+            <translated>true</translated>
+            <fields>
+              <field></field>
+            </fields>
+            <properties mode="any">
+              <property name="width">400</property>
+              <property name="minimumInputLength">3</property>
+              <property name="query">
+                select * from Document where ecm:fulltext LIKE ?
+              </property>
+              <property name="documentSchemas">dublincore</property>
+            </properties>
+          </widget>
         </subWidgets>
         <properties mode="any">
           <property name="hideSubLabels">true</property>
         </properties>
-   </widget>
+      </widget>
 
       <widget name="relou" type="text">
         <labels>
