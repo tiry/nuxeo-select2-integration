@@ -39,19 +39,34 @@
    </c:if>
 
    <c:if test="#{!select2Actions.isMultiSelection(widget)}">
-     <h:inputHidden id="#{widget.id}-select2" value="#{field_0}" valueChangeListener="#{select2Actions.valueChanged}"/>
-     <h:inputHidden readonly="true" id="#{widget.id}-select2-init" value="#{select2Actions.resolveSingleReference(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
+     <h:inputHidden id="#{widget.id}_select2" value="#{field_0}" valueChangeListener="#{select2Actions.valueChanged}"/>
+     <nxu:valueHolder id="#{widget.id}_select2_vh" value="#{field_0}" var="initValue" submitValue="false">
+         <h:inputHidden readonly="true" id="#{widget.id}_select2_init" value="#{select2Actions.resolveSingleReference(initValue,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
+         <h:inputText readonly="true" id="#{widget.id}_select2_init2" value="#{select2Actions.resolveSingleReference(initValue,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
+       field_0=#{field_0}
+       initValue = #{initValue}
+       rowData = #{model.rowData}
+     </nxu:valueHolder>
+  </c:if>
+
+  <c:if test="false">
+   <c:if test="#{!select2Actions.isMultiSelection(widget)}">
+     <h:inputHidden id="#{widget.id}_select2" value="#{field_0}" valueChangeListener="#{select2Actions.valueChanged}"/>
+    <nxu:set id="#{widget.id}_select2_alias" value="#{field_0}" var="initValue">
+     <h:inputHidden readonly="true" id="#{widget.id}_select2_init" value="#{select2Actions.resolveSingleReference(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
+    </nxu:set>
+   </c:if>
    </c:if>
 
    <c:if test="#{select2Actions.isMultiSelection(widget)}">
-     <h:inputHidden id="#{widget.id}-select2" value="#{field_0}">
+     <h:inputHidden id="#{widget.id}_select2" value="#{field_0}">
        <f:converter converterId="select2Converter"></f:converter>
      </h:inputHidden>
-     <h:inputHidden readonly="true" id="#{widget.id}-select2-init" value="#{select2Actions.resolveMultipleReferences(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
+     <h:inputHidden readonly="true" id="#{widget.id}_select2_init" value="#{select2Actions.resolveMultipleReferences(field_0,widget.properties['initOperationId'],widget.properties['documentSchemas'])}"/>
    </c:if>
 
-   <h:inputHidden readonly="true" id="#{widget.id}-select2-params" value="#{jsonParams}"/>
-   <h:message for="#{widget.id}-select2" styleClass="errorMessage" />
+   <h:inputHidden readonly="true" id="#{widget.id}_select2_params" value="#{jsonParams}"/>
+   <h:message for="#{widget.id}_select2" styleClass="errorMessage" />
 
   </c:if>
 

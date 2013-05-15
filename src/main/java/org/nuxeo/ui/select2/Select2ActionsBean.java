@@ -23,9 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.el.ELContext;
+import javax.el.ValueExpression;
+import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.component.ValueHolder;
 import javax.faces.component.html.HtmlInputHidden;
+import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
 import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,6 +55,9 @@ import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.platform.forms.layout.api.Widget;
 import org.nuxeo.runtime.api.Framework;
+
+import com.sun.facelets.FaceletContext;
+import com.sun.facelets.el.TagValueExpression;
 
 @Name("select2Actions")
 @Scope(ScopeType.EVENT)
@@ -249,13 +258,64 @@ public class Select2ActionsBean implements Serializable {
     }
 
     public void valueChanged(ValueChangeEvent evt) {
+        // variant using Value Holder to manage the indirection
         Object value = evt.getNewValue();
         String sourceId = evt.getComponent().getId();
-        UIComponent initComponent = evt.getComponent().getParent().findComponent(sourceId + "-init");
+        UIComponent valueHolderComponent = evt.getComponent().getParent().findComponent(sourceId + "_vh");
+
+        if (valueHolderComponent!=null) {
+            EditableValueHolder vh = (EditableValueHolder) valueHolderComponent;
+            vh.setValue(value);
+            vh.setSubmittedValue(value);
+        }
+    }
+
+    public void valueChangedHack(ValueChangeEvent evt) {
+        Object value = evt.getNewValue();
+        String sourceId = evt.getComponent().getId();
+        UIComponent initComponent = evt.getComponent().getParent().findComponent(sourceId + "_init");
+
         if (initComponent!=null) {
             HtmlInputHidden input = (HtmlInputHidden) initComponent;
-            input.setValueExpression("field_0", new ValueExpressionLiteral(value, String.class));
-            input.resetValue();
+            //input.resetValue();
+
+            // extract el
+            ValueExpression ve = input.getValueExpression("value");
+            String el = ve.getExpressionString();
+
+            // rewrite el to bind to a temp variable
+            //el = el.replace("field_0", "tmp_init_field");
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            ELContext elContext = facesContext.getELContext();
+
+            // create a temp variable
+            ValueExpression literalValue = facesContext.getApplication().getExpressionFactory().createValueExpression(value, String.class);
+            elContext.getVariableMapper().setVariable("field_0", literalValue);
+
+            // rebuild the ValueExpression and rebind the input
+            ValueExpression initValueExpression = facesContext.getApplication().getExpressionFactory().createValueExpression(elContext, el, Object.class);
+            input.setValueExpression("value", initValueExpression);
         }
+
+        /*
+        if (initComponent2!=null) {
+            HtmlInputText input = (HtmlInputText) initComponent2;
+            input.resetValue();
+            ValueExpression ve = input.getValueExpression("value");
+            String el = ve.getExpressionString();
+
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            ELContext elContext = facesContext.getELContext();
+
+            ValueExpression ve2 = facesContext.getApplication().getExpressionFactory().createValueExpression(value, String.class);
+
+            elContext.getVariableMapper().setVariable("initValue", ve2);
+
+            ValueExpression ve3 = facesContext.getApplication().getExpressionFactory().createValueExpression(elContext, el, Object.class);
+
+            input.setValueExpression("value", ve3);
+
+        }*/
+
     }
 }

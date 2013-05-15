@@ -8,11 +8,11 @@
 
          el=jQuery(el);
 
-         var paramId = (elid + "-params").split(":").join("\\:");
+         var paramId = (elid + "_params").split(":").join("\\:");
          var paramsHolder = jQuery("#" + paramId);
          params=JSON.parse(paramsHolder.val());
 
-         var initId = (elid + "-init").split(":").join("\\:");
+         var initId = (elid + "_init").split(":").join("\\:");
          var initHolder = jQuery("#" + initId);
          var initDoc = null;
          try {
