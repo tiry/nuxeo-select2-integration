@@ -12,12 +12,12 @@
   <c:if test="#{widget.mode == 'view'}">
 
     <c:if test="#{!select2Actions.isMultiSelection(widget)}">
-      <h:outputText value="#{select2Actions.resolveSingleReferenceLabel(field_0, widgetProperty_initOperationId, widgetProperty_labelProperty)}" />
+      <h:outputText value="#{select2Actions.resolveSingleReferenceLabel(field_0, widgetProperty_initOperationId, widgetProperty_idProperty,widgetProperty_labelProperty)}" />
     </c:if>
 
     <c:if test="#{select2Actions.isMultiSelection(widget)}">
       <c:forEach var="label"
-        items="#{select2Actions.resolveMultipleReferenceLabels(field_0, widgetProperty_initOperationId, widgetProperty_labelProperty)}">
+        items="#{select2Actions.resolveMultipleReferenceLabels(field_0, widgetProperty_initOperationId, widgetProperty_idProperty,widgetProperty_labelProperty)}">
         <h:outputText value="#{label}"/><br/>
       </c:forEach>
     </c:if>
@@ -45,7 +45,7 @@
       <nxu:valueHolder id="#{widget.id}_select2"
         value="#{field_0}" var="currentValue">
         <h:inputHidden readonly="true" id="#{widget.id}_select2_init"
-          value="#{select2Actions.resolveSingleReference(currentValue, widgetProperty_initOperationId, widgetProperty_documentSchemas)}" />
+          value="#{select2Actions.resolveSingleReference(currentValue, widgetProperty_initOperationId, widgetProperty_idProperty,widgetProperty_documentSchemas)}" />
       </nxu:valueHolder>
     </c:if>
 
@@ -54,7 +54,7 @@
         value="#{field_0}" var="currentValue">
         <f:converter converterId="select2Converter"></f:converter>
         <h:inputHidden readonly="true" id="#{widget.id}_select2_init"
-          value="#{select2Actions.resolveMultipleReferences(currentValue, widgetProperty_initOperationId, widgetProperty_documentSchemas)}" />
+          value="#{select2Actions.resolveMultipleReferences(currentValue, widgetProperty_initOperationId, widgetProperty_idProperty, widgetProperty_documentSchemas)}" />
       </nxu:valueHolder>
     </c:if>
 

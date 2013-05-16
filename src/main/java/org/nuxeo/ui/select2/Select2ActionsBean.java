@@ -40,6 +40,7 @@ import org.nuxeo.ecm.automation.server.jaxrs.io.JsonWriter;
 import org.nuxeo.ecm.automation.server.jaxrs.io.writers.JsonDocumentWriter;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.PathRef;
@@ -85,7 +86,7 @@ public class Select2ActionsBean implements Serializable {
     }
 
     protected DocumentModel resolveReference(String storedReference,
-            String operationName) throws Exception {
+            String operationName, String idProperty) throws Exception {
 
         if (storedReference == null || storedReference.isEmpty()) {
             return null;
@@ -94,27 +95,69 @@ public class Select2ActionsBean implements Serializable {
 
         if (operationName == null || operationName.isEmpty()) {
             DocumentRef ref = null;
-            if (storedReference.startsWith("/")) {
-                ref = new PathRef(storedReference);
-            } else {
-                ref = new IdRef(storedReference);
+
+            if (idProperty!=null && ! idProperty.isEmpty()) {
+                String query =" select * from Document where " + idProperty + "='" + storedReference + "'";
+                DocumentModelList docs = documentManager.query(query);
+                if (docs.size()>0) {
+                    return docs.get(0);
+                } else {
+                    log.warn("Unable to resolve doc using property " + idProperty + " and value " + storedReference);
+                    return null;
+                }
             }
-            if (documentManager.exists(ref)) {
-                doc = documentManager.getDocument(ref);
+            else {
+                if (storedReference.startsWith("/")) {
+                    ref = new PathRef(storedReference);
+                } else {
+                    ref = new IdRef(storedReference);
+                }
+                if (documentManager.exists(ref)) {
+                    doc = documentManager.getDocument(ref);
+                }
             }
         } else {
             AutomationService as = Framework.getLocalService(AutomationService.class);
             OperationContext ctx = new OperationContext(documentManager);
-            ctx.setInput(storedReference);
-            doc = (DocumentModel) as.run(ctx, operationName, null);
+
+            ctx.put("value", storedReference);
+            ctx.put("xpath", idProperty);
+
+            /*
+            OperationType targetType = null;
+            for (OperationType opType : as.getOperations()) {
+                if (operationName.equals(opType.getId())) {
+                    targetType = opType;
+                    break;
+                }
+            }
+
+            if (targetType!=null) {
+                //targetType.getDocumentation().
+                // run an operation : set as input
+                ctx.setInput(storedReference);
+            }*/
+
+            Object result = as.run(ctx, operationName, null);
+
+            if (result==null) {
+                doc = null;
+            } else if (result instanceof DocumentModel) {
+                doc = (DocumentModel) result;
+            } else if (result instanceof DocumentModelList) {
+                DocumentModelList docs= (DocumentModelList) result;
+                if (docs.size()>0) {
+                    doc = docs.get(0);
+                }
+            }
         }
         return doc;
     }
 
     public String resolveSingleReference(String storedReference,
-            String operationName, String schemaNames) throws Exception {
+            String operationName, String idProperty, String schemaNames) throws Exception {
 
-        DocumentModel doc = resolveReference(storedReference, operationName);
+        DocumentModel doc = resolveReference(storedReference, operationName, idProperty);
         if (doc == null) {
             return "";
         }
@@ -132,7 +175,7 @@ public class Select2ActionsBean implements Serializable {
 
     @SuppressWarnings("rawtypes")
     public String resolveMultipleReferences(Object value, String operationName,
-            String schemaNames) throws Exception {
+            String idProperty, String schemaNames) throws Exception {
 
         if (value == null) {
             return "[]";
@@ -159,7 +202,7 @@ public class Select2ActionsBean implements Serializable {
         jg.writeStartArray();
 
         for (String ref : storedRefs) {
-            DocumentModel doc = resolveReference(ref, operationName);
+            DocumentModel doc = resolveReference(ref, operationName, idProperty);
             if (doc == null) {
                 return "";
             }
@@ -178,9 +221,9 @@ public class Select2ActionsBean implements Serializable {
     }
 
     public String resolveSingleReferenceLabel(String storedReference,
-            String operationName, String label) throws Exception {
+            String operationName,String idProperty, String label) throws Exception {
 
-        DocumentModel doc = resolveReference(storedReference, operationName);
+        DocumentModel doc = resolveReference(storedReference, operationName, idProperty);
         if (doc == null) {
             return "";
         }
@@ -198,7 +241,7 @@ public class Select2ActionsBean implements Serializable {
 
     @SuppressWarnings("rawtypes")
     public List<String> resolveMultipleReferenceLabels(Object value,
-            String operationName, String label) throws Exception {
+            String operationName, String idProperty, String label) throws Exception {
 
         List<String> result = new ArrayList<>();
 
@@ -218,7 +261,7 @@ public class Select2ActionsBean implements Serializable {
         }
 
         for (String ref : storedRefs) {
-            DocumentModel doc = resolveReference(ref, operationName);
+            DocumentModel doc = resolveReference(ref, operationName, idProperty);
             if (doc != null) {
                 if (label != null && !label.isEmpty()) {
                     Object val = doc.getPropertyValue(label);
