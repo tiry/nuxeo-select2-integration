@@ -31,6 +31,9 @@
         <row>
           <widget>relou</widget>
         </row>
+        <row>
+          <widget>dir</widget>
+        </row>
       </rows>
 
       <widget name="select2A" type="select2">
@@ -163,8 +166,26 @@
         </properties>
       </widget>
 
+      <widget name="dir" type="select2directory">
+        <labels>
+          <label mode="any">Directory</label>
+        </labels>
+        <translated>true</translated>
+        <fields>
+          <field>dc:source</field>
+        </fields>
+        <properties mode="any">
+          <property name="width">200</property>
+          <property name="minimumInputLength">0</property>
+          <property name="directoryName">nature</property>
+           <property name="customFormater">dirformater</property>
+          <property name="inlinejs"> <![CDATA[
+  function dirformater(entry) {
+   return entry.label;
+  }]]></property>
+        </properties>
+      </widget>
     </layout>
-
 
   </extension>
 

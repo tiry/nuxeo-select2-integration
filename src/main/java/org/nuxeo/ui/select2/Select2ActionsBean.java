@@ -26,6 +26,8 @@ import java.util.Map.Entry;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,13 +40,22 @@ import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.server.jaxrs.io.JsonWriter;
 import org.nuxeo.ecm.automation.server.jaxrs.io.writers.JsonDocumentWriter;
+import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.PathRef;
+import org.nuxeo.ecm.core.schema.SchemaManager;
+import org.nuxeo.ecm.core.schema.types.Field;
+import org.nuxeo.ecm.core.schema.types.QName;
+import org.nuxeo.ecm.core.schema.types.Schema;
+import org.nuxeo.ecm.directory.Directory;
+import org.nuxeo.ecm.directory.Session;
+import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.ecm.platform.forms.layout.api.Widget;
+import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 import org.nuxeo.runtime.api.Framework;
 
 @Name("select2Actions")
@@ -52,6 +63,9 @@ import org.nuxeo.runtime.api.Framework;
 public class Select2ActionsBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @In(create = true)
+    protected ResourcesAccessor resourcesAccessor;
 
     @SuppressWarnings("unused")
     private static final Log log = LogFactory.getLog(Select2ActionsBean.class);
@@ -171,6 +185,49 @@ public class Select2ActionsBean implements Serializable {
         JsonDocumentWriter.writeDocument(out, doc, schemas);
         out.flush();
         return new String(baos.toByteArray(), "UTF-8");
+    }
+
+    public String resolveSingleDirectoryEntry(String storedReference,
+            String directoryName, boolean translateLabels) throws Exception {
+
+        if (storedReference==null || storedReference.isEmpty()) {
+            return "";
+        }
+
+        DirectoryService directoryService = Framework.getLocalService(DirectoryService.class);
+        Directory directory = directoryService.getDirectory(directoryName);
+        String schemaName = directory.getSchema();
+        SchemaManager schemaManager = Framework.getLocalService(SchemaManager.class);
+        Schema schema = schemaManager.getSchema(schemaName);
+
+        Session session = null;
+        try {
+            session = directory.getSession();
+            DocumentModel entry = session.getEntry(storedReference);
+
+            JSONObject obj = new JSONObject();
+            for (Field field : schema.getFields()) {
+                QName fieldName = field.getName();
+                String key = fieldName.getLocalName();
+                Serializable value = entry.getPropertyValue(fieldName.getPrefixedName());
+                if (translateLabels && "label".equals(key)) {
+                    value = resourcesAccessor.getMessages().get((String) value);
+                }
+                obj.element(key, value);
+            }
+            return obj.toString();
+        } catch (Exception e) {
+            // TODO: handle exception
+            return "";
+        } finally {
+            try {
+                if (session != null) {
+                    session.close();
+                }
+            } catch (ClientException ce) {
+                log.error("Could not close directory session", ce);
+            }
+        }
     }
 
     @SuppressWarnings("rawtypes")

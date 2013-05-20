@@ -1,4 +1,63 @@
 
+   function getOperationName(params) {
+     var opName = params.operationId;
+       if(typeof(opName)=='undefined' || opName==''){
+         if (params.directoryName && params.directoryName.length>0) {
+           opName = 'Directory.SuggestEntries';
+         } else {
+           opName = 'Document.PageProvider';
+         }
+       }
+     return opName;
+   }
+   function configureOperationParameters(op, params, query) {
+     if (params.directoryName && params.directoryName.length>0) {
+       // build default operation for Directory
+       op.addParameter("directoryName",params.directoryName);
+       op.addParameter("prefix", query.term);
+       op.addParameter("translateLabels", "true");
+       op.addParameter("lang", currentUserLang);
+      } else {
+       // build default operation for Document
+       op.addParameter("queryParams", query.term + "%");
+       op.addParameter("query",params.query);
+       op.addParameter("page","0");
+       op.addParameter("pageSize","20");
+      }
+   }
+
+   function fillResult(results, data, params) {
+     if (params.directoryName && params.directoryName.length>0) {
+        // default result parsing for Directory entries
+        for ( i = 0; i < data.length; i++) {
+             var entry = data[i];
+             results.push(entry);
+          }
+     } else {
+         // default result parsing for Documents
+         for ( i = 0; i < data.entries.length; i++) {
+           var doc = data.entries[i];
+           results.push(doc);
+        }
+     }
+   }
+
+   function getDefaultLabel(item) {
+     if (item.label) {
+       return item.label;
+     } else {
+       return item.title;
+     }
+   }
+
+   function getDefaultId(item) {
+     if (item.uid) {
+       return item.uid;
+     } else {
+       return item.id;
+     }
+   }
+
    function initSelect2Widget(el) {
        // retrieve parameters from Html
        var elid = el.attr("id");
@@ -13,22 +72,16 @@
        var initDoc = null;
        try {
          initDoc =JSON.parse(initHolder.val());
-       } catch(err) {}
+       } catch(err) {console.log("Unable to parse initvalue", err, initHolder.val())}
 
        // set style on select
        el.css("width",params.width + "px");
 
        // determine operation name
-       var opName = params.operationId;
-       if(typeof(opName)=='undefined' || opName==''){
-         opName = 'Document.PageProvider';
-       }
+       var opName = getOperationName(params);
 
        // init Automation Operation
        var op = jQuery().automation(opName,{"documentSchemas":params.documentSchemas});
-       op.addParameter("query",params.query);
-       op.addParameter("page","0");
-       op.addParameter("pageSize","20");
 
        // detect if we need custom result formating
        var customFormaterFunction = null;
@@ -40,13 +93,12 @@
        var select2_params = {
         minimumInputLength: params.minimumInputLength,
         query: function (query) {
-          op.addParameter("queryParams", query.term + "%");
+
+          configureOperationParameters(op, params, query);
+
           op.execute(function(data, textStatus,xhr) {
             var results = [];
-            for ( i = 0; i < data.entries.length; i++) {
-              var doc = data.entries[i];
-              results.push(doc);
-            }
+            fillResult(results, data, params)
             query.callback({results : results});
           });
        }}
@@ -57,20 +109,20 @@
          select2_params.formatSelection = function(doc)
                                   {if (select2_params.labelProperty!=null) {
                                         return doc.properties[select2_params.labelProperty]; }
-                                   else { return doc.title;} };
+                                   else { return getDefaultLabel(doc)} };
        } else {
-         select2_params.formatResult = function(doc) {return doc.title};
+         select2_params.formatResult = getDefaultLabel ;
          select2_params.formatSelection = function(doc)
                                   {if (select2_params.labelProperty!=null) {
                                         return doc.properties[select2_params.labelProperty]; }
-                                   else { return doc.title;} };
+                                   else { return getDefaultLabel(doc) } };
        }
 
        // append id formater if needed
        if (params.idProperty && params.idProperty.length>0) {
           select2_params.id = function(doc) { return doc.properties[params.idProperty]; };
        } else {
-          select2_params.id = function(doc) { return doc.uid; }
+          select2_params.id = getDefaultId;
        }
 
        if (initDoc!=null) {

@@ -12,14 +12,11 @@
   <c:if test="#{widget.mode == 'view'}">
 
     <c:if test="#{!select2Actions.isMultiSelection(widget)}">
-      <h:outputText value="#{select2Actions.resolveSingleReferenceLabel(field_0, widgetProperty_initOperationId, widgetProperty_idProperty,widgetProperty_labelProperty)}" />
+        XXX
     </c:if>
 
     <c:if test="#{select2Actions.isMultiSelection(widget)}">
-      <c:forEach var="label"
-        items="#{select2Actions.resolveMultipleReferenceLabels(field_0, widgetProperty_initOperationId, widgetProperty_idProperty,widgetProperty_labelProperty)}">
-        <h:outputText value="#{label}"/><br/>
-      </c:forEach>
+        XXX
     </c:if>
 
   </c:if>
@@ -32,7 +29,7 @@
       <nxu:valueHolder id="#{widget.id}_select2"
         value="#{field_0}" var="currentValue">
         <h:inputHidden readonly="true" id="#{widget.id}_select2_init"
-          value="#{select2Actions.resolveSingleReference(currentValue, widgetProperty_initOperationId, widgetProperty_idProperty,widgetProperty_documentSchemas)}" />
+          value="#{select2Actions.resolveSingleDirectoryEntry(currentValue, widgetProperty_directoryName, 'true')}" />
       </nxu:valueHolder>
     </c:if>
 

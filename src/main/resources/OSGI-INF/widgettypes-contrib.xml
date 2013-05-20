@@ -218,6 +218,135 @@
       </property>
     </widgetType>
 
+
+
+
+
+ <widgetType name="select2directory">
+      <configuration>
+        <sinceVersion>5.7</sinceVersion>
+        <title>Select2</title>
+        <description>
+          <p>Uses Select2 JS library to render a selection / suggestion widget</p>
+        </description>
+        <categories>
+          <category>document</category>
+        </categories>
+        <supportedModes>
+          <mode>view</mode>
+          <mode>edit</mode>
+        </supportedModes>
+        <fields>
+          <list>true</list>
+          <complex>false</complex>
+          <supportedTypes>
+            <type>string</type>
+          </supportedTypes>
+        </fields>
+        <properties>
+          <layouts mode="any">
+            <layout name="select2_directory_widget_type_properties_any">
+              <rows>
+                <row>
+                  <widget>width</widget>
+                </row>
+                <row>
+                  <widget>minimumInputLength</widget>
+                </row>
+                <row>
+                  <widget>directoryName</widget>
+                </row>
+                <row>
+                  <widget>labelProperty</widget>
+                </row>
+                <row>
+                  <widget>customFormater</widget>
+                </row>
+                <row>
+                  <widget>inlinejs</widget>
+                </row>
+              </rows>
+
+              <widget name="width" type="int">
+                <labels>
+                  <label mode="any">Width</label>
+                </labels>
+                <helpLabels>
+                  <label mode="any">
+                    Width in pixels of the select2 combobox
+                  </label>
+                </helpLabels>
+                <fields>
+                  <field>width</field>
+                </fields>
+              </widget>
+
+              <widget name="customFormater" type="text">
+                <labels>
+                  <label mode="any">Custom Formater</label>
+                </labels>
+                <helpLabels>
+                  <label mode="any">
+                    Name of the JavaScript function name that will be called by select2 to do the formating of the suggestion entries.
+                    The target function should take as input the javascript Document as returned by Automation and should return some Html.
+                  </label>
+                </helpLabels>
+                <fields>
+                  <field>customFormater</field>
+                </fields>
+              </widget>
+
+              <widget name="minimumInputLength" type="int">
+                <labels>
+                  <label mode="any">Minimum input length</label>
+                </labels>
+                <helpLabels>
+                  <label mode="any">
+                    Minimal number of characters before calling the server to fetch the suggestions
+                  </label>
+                </helpLabels>
+                <fields>
+                  <field>minimumInputLength</field>
+                </fields>
+              </widget>
+
+              <widget name="directoryName" type="text">
+                <labels>
+                  <label mode="any">Directory Name</label>
+                </labels>
+                <helpLabels>
+                  <label mode="any">
+                    Name of the directory
+                  </label>
+                </helpLabels>
+                <fields>
+                  <field>directory</field>
+                </fields>
+              </widget>
+              <widget name="inlinejs" type="text">
+                <labels>
+                  <label mode="any">inline js</label>
+                </labels>
+                <helpLabels>
+                  <label mode="any">
+                    Javascript to be injected in the page with the Widget.
+                  </label>
+                </helpLabels>
+                <fields>
+                  <field>inlinejs</field>
+                </fields>
+              </widget>
+            </layout>
+          </layouts>
+        </properties>
+      </configuration>
+      <handler-class>
+        org.nuxeo.ecm.platform.forms.layout.facelets.plugins.TemplateWidgetTypeHandler
+      </handler-class>
+      <property name="template">
+       /select2/select2_directory_widget_template.xhtml
+      </property>
+    </widgetType>
   </extension>
 
 </component>
