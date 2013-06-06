@@ -18,7 +18,7 @@
         </row>
       </rows>
 
-       <widget name="select2Widget" type="select2">
+       <widget name="select2Widget" type="select2Widget">
         <labels>
           <label mode="any">Simple (source)</label>
         </labels>

@@ -36,7 +36,7 @@
         </row>
       </rows>
 
-      <widget name="select2A" type="select2">
+      <widget name="select2A" type="select2Widget">
         <labels>
           <label mode="any">Simple (source)</label>
         </labels>
@@ -54,7 +54,7 @@
         </properties>
       </widget>
 
-      <widget name="select2B" type="select2">
+      <widget name="select2B" type="select2Widget">
         <labels>
           <label mode="any">With format (format)</label>
         </labels>
@@ -81,7 +81,7 @@
         </properties>
       </widget>
 
-      <widget name="select2C" type="select2">
+      <widget name="select2C" type="select2Widget">
         <labels>
           <label mode="any">Custom format + custom id (rights)</label>
         </labels>
@@ -101,7 +101,7 @@
         </properties>
       </widget>
 
-      <widget name="select2D" type="select2">
+      <widget name="select2D" type="select2Widget">
         <labels>
           <label mode="any">Multiple (subjects)</label>
         </labels>
@@ -130,7 +130,7 @@
           <field>dc:contributors</field>
         </fields>
         <subWidgets>
-          <widget name="select2F" type="select2">
+          <widget name="select2F" type="select2Widget">
             <labels>
               <label mode="any"></label>
             </labels>

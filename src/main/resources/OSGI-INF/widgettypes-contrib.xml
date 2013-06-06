@@ -4,12 +4,12 @@
   <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
     point="widgettypes">
 
-    <widgetType name="select2">
+    <widgetType name="select2Widget">
       <configuration>
         <sinceVersion>5.7</sinceVersion>
         <title>Select2</title>
         <description>
-          <p>Uses Select2 JS library to render a selection / suggestion widget</p>
+          <p>Document Suggestion Widget based on Select2 JS library. Nuxeo Automation  is used to manage Select2 data binding.</p>
         </description>
         <categories>
           <category>document</category>
@@ -70,7 +70,7 @@
                 </labels>
                 <helpLabels>
                   <label mode="any">
-                    Width in pixels of the select2 combobox
+                    Width in pixels of the Select2 ComboBox
                   </label>
                 </helpLabels>
                 <fields>
@@ -186,6 +186,7 @@
                 <helpLabels>
                   <label mode="any">
                     Id of the Nuxeo repositry that should be accessed.
+                    If unsed, the default repository will be used.
                   </label>
                 </helpLabels>
                 <fields>
