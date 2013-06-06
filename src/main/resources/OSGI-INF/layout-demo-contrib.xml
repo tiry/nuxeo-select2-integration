@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.platform.forms.layoutDemo.select2.contrib">
+
+  <require>org.nuxeo.ecm.platform.forms.layoutDemo.contrib</require>
+
+  <extension target="org.nuxeo.ecm.platform.forms.layoutDemo.framework"
+    point="widgettypes">
+
+    <widgetType name="select2Widget">
+      <label>Select2</label>
+      <viewId>select2Widget</viewId>
+      <category>standard</category>
+      <preview enabled="true">
+        <fields>
+          <field>lds:textField</field>
+        </fields>
+        <defaultProperties>
+          <property name="rendered">true</property>
+        </defaultProperties>
+      </preview>
+      <layouts>
+        <layout name="select2WidgetLayout" src="sources/OSGI-INF/layout-demo-select2-widget.xml" />
+      </layouts>
+    </widgetType>
+
+  </extension>
+
+</component>

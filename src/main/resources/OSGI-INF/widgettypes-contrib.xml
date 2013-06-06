@@ -36,6 +36,9 @@
                   <widget>minimumInputLength</widget>
                 </row>
                 <row>
+                  <widget>repository</widget>
+                </row>
+                <row>
                   <widget>operationId</widget>
                 </row>
                 <row>
@@ -175,6 +178,21 @@
                   <field>inlinejs</field>
                 </fields>
               </widget>
+
+              <widget name="repository" type="text">
+                <labels>
+                  <label mode="any">target Repository</label>
+                </labels>
+                <helpLabels>
+                  <label mode="any">
+                    Id of the Nuxeo repositry that should be accessed.
+                  </label>
+                </helpLabels>
+                <fields>
+                  <field>repository</field>
+                </fields>
+              </widget>
+
 
               <widget name="operationId" type="text">
                 <labels>

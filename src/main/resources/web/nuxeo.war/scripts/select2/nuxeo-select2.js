@@ -80,8 +80,15 @@
        // determine operation name
        var opName = getOperationName(params);
 
+       // define automation params
+       var automationParams = {"documentSchemas":params.documentSchemas};
+
+       if (params.repository) {
+         automationParams.repository = params.repository;
+       }
+
        // init Automation Operation
-       var op = jQuery().automation(opName,{"documentSchemas":params.documentSchemas});
+       var op = jQuery().automation(opName,automationParams);
 
        // detect if we need custom result formating
        var customFormaterFunction = null;
