@@ -9,7 +9,7 @@
   <groupId>org.nuxeo.ui</groupId>
   <artifactId>nuxeo-select2-integration</artifactId>
   <name>nuxeo-select2-integration</name>
-  <description/>
+  <description />
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.common</groupId>
@@ -78,6 +78,11 @@
     <dependency>
       <groupId>org.jboss.el</groupId>
       <artifactId>jboss-el</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.json-lib</groupId>
+      <artifactId>json-lib</artifactId>
+      <classifier>jdk15</classifier>
     </dependency>
   </dependencies>
   <build>

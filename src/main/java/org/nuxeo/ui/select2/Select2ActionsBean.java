@@ -21,6 +21,7 @@ import java.io.BufferedOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.faces.context.FacesContext;
@@ -59,7 +60,6 @@ import org.nuxeo.ecm.directory.Directory;
 import org.nuxeo.ecm.directory.Session;
 import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.ecm.platform.forms.layout.api.Widget;
-import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 import org.nuxeo.runtime.api.Framework;
 
 @Name("select2Actions")
@@ -68,13 +68,13 @@ public class Select2ActionsBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @In(create = true)
-    protected ResourcesAccessor resourcesAccessor;
-
     @SuppressWarnings("unused")
     private static final Log log = LogFactory.getLog(Select2ActionsBean.class);
 
     protected static final String SELECT2_RESOURCES_MARKER = "SELECT2_RESOURCES_MARKER";
+
+    @In(create = true)
+    protected Map<String, String> messages;
 
     @In(create = true, required = false)
     protected transient CoreSession documentManager;
@@ -105,17 +105,20 @@ public class Select2ActionsBean implements Serializable {
         return false;
     }
 
-    protected CoreSession getRepositorySession(String repoName) throws Exception {
+    protected CoreSession getRepositorySession(String repoName)
+            throws Exception {
 
         RepositoryManager rm = Framework.getLocalService(RepositoryManager.class);
         Repository repository = null;
-        if (repoName==null || repoName.isEmpty()) {
+        if (repoName == null || repoName.isEmpty()) {
             repository = rm.getDefaultRepository();
         } else {
             repository = rm.getRepository(repoName);
         }
 
-        if (documentManager!=null && documentManager.getRepositoryName().equals(repository.getName())) {
+        if (documentManager != null
+                && documentManager.getRepositoryName().equals(
+                        repository.getName())) {
             return documentManager;
         }
 
@@ -123,15 +126,16 @@ public class Select2ActionsBean implements Serializable {
         return dedicatedSession;
     }
 
-    protected DocumentModel resolveReference(String repo,String storedReference,
-            String operationName, String idProperty) throws Exception {
+    protected DocumentModel resolveReference(String repo,
+            String storedReference, String operationName, String idProperty)
+            throws Exception {
 
         if (storedReference == null || storedReference.isEmpty()) {
             return null;
         }
         DocumentModel doc = null;
         CoreSession session = getRepositorySession(repo);
-        if (session==null) {
+        if (session == null) {
             log.error("Unable to get CoreSession for repo " + repo);
             return null;
         }
@@ -139,17 +143,18 @@ public class Select2ActionsBean implements Serializable {
         if (operationName == null || operationName.isEmpty()) {
             DocumentRef ref = null;
 
-            if (idProperty!=null && ! idProperty.isEmpty()) {
-                String query =" select * from Document where " + idProperty + "='" + storedReference + "'";
+            if (idProperty != null && !idProperty.isEmpty()) {
+                String query = " select * from Document where " + idProperty
+                        + "='" + storedReference + "'";
                 DocumentModelList docs = session.query(query);
-                if (docs.size()>0) {
+                if (docs.size() > 0) {
                     return docs.get(0);
                 } else {
-                    log.warn("Unable to resolve doc using property " + idProperty + " and value " + storedReference);
+                    log.warn("Unable to resolve doc using property "
+                            + idProperty + " and value " + storedReference);
                     return null;
                 }
-            }
-            else {
+            } else {
                 if (storedReference.startsWith("/")) {
                     ref = new PathRef(storedReference);
                 } else {
@@ -168,13 +173,13 @@ public class Select2ActionsBean implements Serializable {
 
             Object result = as.run(ctx, operationName, null);
 
-            if (result==null) {
+            if (result == null) {
                 doc = null;
             } else if (result instanceof DocumentModel) {
                 doc = (DocumentModel) result;
             } else if (result instanceof DocumentModelList) {
-                DocumentModelList docs= (DocumentModelList) result;
-                if (docs.size()>0) {
+                DocumentModelList docs = (DocumentModelList) result;
+                if (docs.size() > 0) {
                     doc = docs.get(0);
                 }
             }
@@ -184,15 +189,17 @@ public class Select2ActionsBean implements Serializable {
 
     @Destroy
     public void destroy() {
-        if (dedicatedSession!=null) {
+        if (dedicatedSession != null) {
             CoreInstance.getInstance().close(dedicatedSession);
         }
     }
 
     public String resolveSingleReference(String storedReference, String repo,
-            String operationName, String idProperty, String schemaNames) throws Exception {
+            String operationName, String idProperty, String schemaNames)
+            throws Exception {
 
-        DocumentModel doc = resolveReference(repo,storedReference, operationName, idProperty);
+        DocumentModel doc = resolveReference(repo, storedReference,
+                operationName, idProperty);
         if (doc == null) {
             return "";
         }
@@ -211,7 +218,7 @@ public class Select2ActionsBean implements Serializable {
     public String resolveSingleDirectoryEntry(String storedReference,
             String directoryName, boolean translateLabels) throws Exception {
 
-        if (storedReference==null || storedReference.isEmpty()) {
+        if (storedReference == null || storedReference.isEmpty()) {
             return "";
         }
 
@@ -232,7 +239,7 @@ public class Select2ActionsBean implements Serializable {
                 String key = fieldName.getLocalName();
                 Serializable value = entry.getPropertyValue(fieldName.getPrefixedName());
                 if (translateLabels && "label".equals(key)) {
-                    value = resourcesAccessor.getMessages().get((String) value);
+                    value = messages.get(value);
                 }
                 obj.element(key, value);
             }
@@ -252,8 +259,9 @@ public class Select2ActionsBean implements Serializable {
     }
 
     @SuppressWarnings("rawtypes")
-    public String resolveMultipleReferences(Object value, String repo, String operationName,
-            String idProperty, String schemaNames) throws Exception {
+    public String resolveMultipleReferences(Object value, String repo,
+            String operationName, String idProperty, String schemaNames)
+            throws Exception {
 
         if (value == null) {
             return "[]";
@@ -280,7 +288,8 @@ public class Select2ActionsBean implements Serializable {
         jg.writeStartArray();
 
         for (String ref : storedRefs) {
-            DocumentModel doc = resolveReference(repo, ref, operationName, idProperty);
+            DocumentModel doc = resolveReference(repo, ref, operationName,
+                    idProperty);
             if (doc == null) {
                 return "";
             }
@@ -298,10 +307,12 @@ public class Select2ActionsBean implements Serializable {
         return json;
     }
 
-    public String resolveSingleReferenceLabel(String storedReference,String repo,
-            String operationName,String idProperty, String label) throws Exception {
+    public String resolveSingleReferenceLabel(String storedReference,
+            String repo, String operationName, String idProperty, String label)
+            throws Exception {
 
-        DocumentModel doc = resolveReference(repo,storedReference, operationName, idProperty);
+        DocumentModel doc = resolveReference(repo, storedReference,
+                operationName, idProperty);
         if (doc == null) {
             return "";
         }
@@ -318,8 +329,9 @@ public class Select2ActionsBean implements Serializable {
     }
 
     @SuppressWarnings("rawtypes")
-    public List<String> resolveMultipleReferenceLabels(Object value,String repo,
-            String operationName, String idProperty, String label) throws Exception {
+    public List<String> resolveMultipleReferenceLabels(Object value,
+            String repo, String operationName, String idProperty, String label)
+            throws Exception {
 
         List<String> result = new ArrayList<>();
 
@@ -339,7 +351,8 @@ public class Select2ActionsBean implements Serializable {
         }
 
         for (String ref : storedRefs) {
-            DocumentModel doc = resolveReference(repo,ref, operationName, idProperty);
+            DocumentModel doc = resolveReference(repo, ref, operationName,
+                    idProperty);
             if (doc != null) {
                 if (label != null && !label.isEmpty()) {
                     Object val = doc.getPropertyValue(label);
