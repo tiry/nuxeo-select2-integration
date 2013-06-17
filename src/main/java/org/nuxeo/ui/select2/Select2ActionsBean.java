@@ -131,6 +131,7 @@ public class Select2ActionsBean implements Serializable {
             throws Exception {
 
         if (storedReference == null || storedReference.isEmpty()) {
+            log.error("No reference provided ");
             return null;
         }
         DocumentModel doc = null;
@@ -139,7 +140,6 @@ public class Select2ActionsBean implements Serializable {
             log.error("Unable to get CoreSession for repo " + repo);
             return null;
         }
-
         if (operationName == null || operationName.isEmpty()) {
             DocumentRef ref = null;
 
@@ -162,6 +162,8 @@ public class Select2ActionsBean implements Serializable {
                 }
                 if (session.exists(ref)) {
                     doc = session.getDocument(ref);
+                } else {
+                    log.error("Unable to resolve reference on " + ref);
                 }
             }
         } else {
@@ -174,6 +176,7 @@ public class Select2ActionsBean implements Serializable {
             Object result = as.run(ctx, operationName, null);
 
             if (result == null) {
+                log.error("Unable to resolve reference " + storedReference + " using property " + idProperty + " and operation" + operationName );
                 doc = null;
             } else if (result instanceof DocumentModel) {
                 doc = (DocumentModel) result;
@@ -181,6 +184,8 @@ public class Select2ActionsBean implements Serializable {
                 DocumentModelList docs = (DocumentModelList) result;
                 if (docs.size() > 0) {
                     doc = docs.get(0);
+                } else {
+                    log.error("No document found");
                 }
             }
         }
