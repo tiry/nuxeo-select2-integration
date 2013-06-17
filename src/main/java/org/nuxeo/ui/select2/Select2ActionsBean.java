@@ -21,6 +21,7 @@ import java.io.BufferedOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.faces.context.FacesContext;
@@ -55,7 +56,6 @@ import org.nuxeo.ecm.directory.Directory;
 import org.nuxeo.ecm.directory.Session;
 import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.ecm.platform.forms.layout.api.Widget;
-import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 import org.nuxeo.runtime.api.Framework;
 
 @Name("select2Actions")
@@ -65,7 +65,7 @@ public class Select2ActionsBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In(create = true)
-    protected ResourcesAccessor resourcesAccessor;
+    protected Map<String, String> messages;
 
     @SuppressWarnings("unused")
     private static final Log log = LogFactory.getLog(Select2ActionsBean.class);
@@ -211,7 +211,7 @@ public class Select2ActionsBean implements Serializable {
                 String key = fieldName.getLocalName();
                 Serializable value = entry.getPropertyValue(fieldName.getPrefixedName());
                 if (translateLabels && "label".equals(key)) {
-                    value = resourcesAccessor.getMessages().get((String) value);
+                    value = messages.get((String) value);
                 }
                 obj.element(key, value);
             }
